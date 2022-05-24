@@ -47,11 +47,11 @@ model = Model(action_size)
 obs = env.reset()
 act, value = model.action_value(obs.reshape(1, -1))
 total_episodes = 2000
-batch_size = 4
+batch_size = 1
 render = False
 GAMMA = 0.99
 ENTROPY_BETA = 0.1
-learning_rate = 0.001
+learning_rate = 0.0001
 
 observations = np.empty((batch_size, obs_space[0]))
 rewards = np.zeros((batch_size,), dtype=np.int32)
@@ -168,7 +168,7 @@ for ep in tqdm(range(total_episodes)):
 	losses = model.train_on_batch(batch_states, act_rew)
 	loss_tracker.append(losses)
 
-if os.path.isdir('results'):
+if not os.path.isdir('results'):
 	os.makedirs('results')
 
 plt.plot(epx, smooth_reward)
