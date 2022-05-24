@@ -7,6 +7,7 @@ import tensorflow.keras.losses as kls
 import tensorflow.keras.optimizers as ko
 import matplotlib.pyplot as plt
 from tqdm import tqdm
+import os
 
 
 tf.config.run_functions_eagerly(True)
@@ -45,9 +46,8 @@ class Model(keras.Model):
 model = Model(action_size)
 obs = env.reset()
 act, value = model.action_value(obs.reshape(1, -1))
-print(act, value)
 total_episodes = 2000
-batch_size = 2
+batch_size = 4
 render = False
 GAMMA = 0.99
 ENTROPY_BETA = 0.1
@@ -168,29 +168,32 @@ for ep in tqdm(range(total_episodes)):
 	losses = model.train_on_batch(batch_states, act_rew)
 	loss_tracker.append(losses)
 
+if os.path.isdir('results'):
+	os.makedirs('results')
+
 plt.plot(epx, smooth_reward)
 #plt.show()
-plt.savefig('reward_smooth.png')
+plt.savefig('results/reward_smooth.png')
 plt.clf()
 
 plt.plot(avg_ep, avg_rew)
 #plt.show()
-plt.savefig('reward_avg.png')
+plt.savefig('results/reward_avg.png')
 plt.clf()
 
 plt.plot([i for i in range(len(entropy_tracker))], entropy_tracker)
 #plt.show()
-plt.savefig('entropy.png')
+plt.savefig('results/entropy.png')
 plt.clf()
 
 plt.plot([i for i in range(len(baseline_tracker))], baseline_tracker)
 #plt.show()
-plt.savefig('baseline.png')
+plt.savefig('results/baseline.png')
 plt.clf()
 
 plt.plot([i for i in range(len(loss_tracker))], loss_tracker)
 #plt.show()
-plt.savefig('loss.png')
+plt.savefig('results/loss.png')
 plt.clf()
 	
 
